@@ -12,9 +12,11 @@
     </div>
 </form>
 {% if img %}
-<form>
+<form method="get" action="{% url 'main:mode' %}">
+    {% csrf_token %}
     <h3>Succesfully uploaded: {{img_title}}</h3> 
     <img src="{{ img.image.url}}" alt="connect" style="max-height:300px">
-    <button formaction="{% url 'main:detection' %}">Go see preds</button>
+    <input type="hidden" name="image" value="{{img_title}}">
+    <button type="submit">Go see preds</button>
 </form>
 {% endif %}

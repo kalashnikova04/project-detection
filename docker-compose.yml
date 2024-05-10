@@ -6,16 +6,14 @@ services:
     command: python manage.py runserver 0.0.0.0:8098
     ports:
       - 8098:8098
-    # environment:
-    #   - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
-    #   - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
-    #   - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
     env_file:
       - .env
     volumes: 
       - share_data:/lp_detection/media/
     depends_on:
       pgdb:
+        condition: service_healthy
+      rmq:
         condition: service_healthy
 
   pgdb:
@@ -26,9 +24,10 @@ services:
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      # - POSTGRES_DB=${POSTGRES_DB}
+      - PGUSER=${PGUSER}
     healthcheck:
-      test: ["CMD-SHELL", "sh -c 'pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}'"]
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${PGUSER}'"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -39,8 +38,29 @@ services:
     container_name: mmdeploy-mmdet
     restart: always
     volumes: 
-      - share_data:/mmdetection/share_web
+      - share_data:/mmdetection/share_web/
     tty: true
+    entrypoint: python3 -u back_model_dino4_inference.py
+    depends_on:
+      - rmq
+      - django
+  
+  rmq:
+    image: rabbitmq:3.8.14-management-alpine
+    hostname: ${RMQ_HOST}
+    ports:
+      - 15672:15672
+      - 5672:5672
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RMQ_PASS}
+      - RABBITMQ_DEFAULT_VHOST=${RMQ_VHOST}
+    container_name: rmq
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 30s
+      timeout: 30s
+      retries: 10
 
 volumes:
   postgres_data:

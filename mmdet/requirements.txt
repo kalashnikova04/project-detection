@@ -1,2 +1,5 @@
 roboflow
 wandb
+Django==5.0.6
+pika
+psycopg2-binary

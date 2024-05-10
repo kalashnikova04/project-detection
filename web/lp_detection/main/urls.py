@@ -6,8 +6,9 @@ app_name = 'main'
 urlpatterns = [
     path('', views.index, name='index'),
     path('train/', views.train_yolo, name='train'),
-    path('pred/', views.get_prediction, name='detection'),
-    # path('upoad/', views.site.urls),
+    path('model_mode/', views.send_inference_task, name='mode'),
+    path('task_status/', views.update_task_status, name='update_status'),
+    path('inference/', views.get_prediction, name='detection_results'),
 ]
 
 
