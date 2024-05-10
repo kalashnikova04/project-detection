@@ -1,0 +1,47 @@
+services:
+  django:
+    build: ./web
+    container_name: django
+    restart: always
+    command: python manage.py runserver 0.0.0.0:8098
+    ports:
+      - 8098:8098
+    # environment:
+    #   - DJANGO_SUPERUSER_USERNAME=${DJANGO_SUPERUSER_USERNAME}
+    #   - DJANGO_SUPERUSER_EMAIL=${DJANGO_SUPERUSER_EMAIL}
+    #   - DJANGO_SUPERUSER_PASSWORD=${DJANGO_SUPERUSER_PASSWORD}
+    env_file:
+      - .env
+    volumes: 
+      - share_data:/lp_detection/media/
+    depends_on:
+      pgdb:
+        condition: service_healthy
+
+  pgdb:
+    image: postgres
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    container_name: pgdb
+  
+  model_deployed:
+    build: ./mmdet
+    container_name: mmdeploy-mmdet
+    restart: always
+    volumes: 
+      - share_data:/mmdetection/share_web
+    tty: true
+
+volumes:
+  postgres_data:
+  share_data:
