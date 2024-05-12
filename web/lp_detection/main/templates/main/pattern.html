@@ -1,0 +1,20 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'main/pattern.css' %}"> 
+    </head>
+    <body>
+      <nav>
+        <a href="/" class="underline">Upload</a>
+        <a href="/train/" class="underline">Train</a>
+        <a href="/task_status/" class="underline">See Tasks</a>
+        <a href="/inference/" class="underline">Inference</a>
+      </nav>
+
+      {% block content %}
+      {% endblock %}
+    </body>
+</html>
+

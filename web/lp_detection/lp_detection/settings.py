@@ -58,10 +58,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'lp_detection.urls'
 
+TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates', 'main')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = Path(BASE_DIR, 'media')
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [TEMPLATES_DIR, STATIC_ROOT, MEDIA_ROOT],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,6 +79,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'lp_detection.wsgi.application'
+
+
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8099']
 
 
 # Database
@@ -129,7 +136,6 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = Path(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

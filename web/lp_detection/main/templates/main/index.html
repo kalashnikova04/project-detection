@@ -1,22 +1,52 @@
-{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+{% extends "main/pattern.html" %}
 
+{% block title %}
+   Upload images
+{% endblock %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %} {{form.as_p }}
-    <!-- <div>
-        <label for="file">Choose a picture for detection:</label>
-        <input type="file" id="file" name="img" accept=".png, .jpg" multiple/>
-    </div> -->
-    <div>
-        <button>Upload</button>
-    </div>
-</form>
-{% if img %}
-<form method="get" action="{% url 'main:mode' %}">
-    {% csrf_token %}
-    <h3>Succesfully uploaded: {{img_title}}</h3> 
-    <img src="{{ img.image.url}}" alt="connect" style="max-height:300px">
-    <input type="hidden" name="image" value="{{img_title}}">
-    <button type="submit">Go see preds</button>
-</form>
-{% endif %}
+{% block content %}
+    {% if form.errors %}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
+    {% endif %}
+
+    {% if images %}
+
+        <form class='modal' method="get" action="{% url 'main:mode' %}" style="max-width: 100%;">
+            <div class="modal-body">
+                <h2 class="modal-title">Succesfully uploaded:</h2> 
+                {% csrf_token %}
+                <div class="grid">
+                    {% for image in images %}
+                        <h4>{{image.title}}</h4> 
+                        <img src="{{ image.image.url}}" alt="connect">
+                        <input type="hidden" name="image{{image.id}}" value="{{image.title}}">
+                    {% endfor %}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit">Go see preds</button>
+                </div>
+            </div>
+        </form>
+
+    {% else %}
+
+        <form class="modal" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="modal-body">
+                <h2 class="modal-title">Upload images</h2>
+                <label class="input-file">
+                    {{ form.image }}
+                    <span>Drag file(s) here to upload</span>
+                </label>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary">Upload</button>
+            </div>
+
+        </form>
+
+    {% endif %}
+{% endblock %}

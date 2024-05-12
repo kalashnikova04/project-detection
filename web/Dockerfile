@@ -1,14 +1,27 @@
 FROM python:3
 
-COPY /lp_detection /lp_detection
-WORKDIR /lp_detection
+ENV PYTHONUNBUFFERED 1
+ENV APP_HOME /lp_detection
 
-EXPOSE 8098
+RUN mkdir -p $APP_HOME
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/media
+
+RUN addgroup --system lp_detection && adduser --system --group lp_detection
+
+COPY /lp_detection $APP_HOME
+WORKDIR $APP_HOME
+
+RUN pip install --upgrade pip
 
 COPY ./requirements.txt .
 RUN pip install -r requirements.txt
 
-ADD docker-entrypoint.sh /lp_detection/docker-entrypoint.sh
-RUN chmod +x /lp_detection/docker-entrypoint.sh
+ADD docker-entrypoint.sh $APP_HOME/docker-entrypoint.sh
+RUN chmod +x $APP_HOME/docker-entrypoint.sh
+
+RUN chown -R lp_detection:lp_detection $APP_HOME
+
+USER lp_detection
 
 ENTRYPOINT ["/lp_detection/docker-entrypoint.sh"]

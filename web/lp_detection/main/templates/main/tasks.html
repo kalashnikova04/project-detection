@@ -1,53 +1,31 @@
-<!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <title>
-            Tasks
-        </title>
-        <style type="text/css">
-            .wrapper {
-                display: grid;
-                grid-template-columns: 2fr 1fr 1fr;
-                }
-            .box1 {
-                display: grid;
-                }
-            .box1 div {
-                padding: 10px;
-                }
-        </style>
-    </head>
+{% extends "main/pattern.html" %}
 
-    <body>
-        <div>
-            <h3>Задачи</h3>
-            <table>
-                <style>
-                table, th, td {
-                    padding: 10px;
-                    border: 1px solid black;
-                    border-collapse: collapse;
-                }
-                </style>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>status</th>
-                        <th>worker_id</th>
-                        <th>mode</th>
-                        <th>Created ts</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for i in tasks %}
-                    <tr>
-                        <td>{{ i.id }}</td>
-                        <td>{{ i.status }}</td>
-                        <td>{{ i.worker_id }}</td>
-                        <td>{{ i.mode }}</td>
-                        <td>{{ i.time }}</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+{% block title %}
+    Tasks
+{% endblock %}
+
+{% block content %}
+
+    <div class="tasks_container">
+        <h2>Tasks</h2>
+        <ul class="responsive-table">
+        <li class="table-header">
+            <div class="col col-1">ID</div>
+            <div class="col col-2">Status</div>
+            <div class="col col-3">Worker_id</div>
+            <div class="col col-4">Mode</div>
+            <div class="col col-5">Created at</div>
+        </li>
+        {% for i in tasks %}
+            <li class="table-row">
+                <div class="col col-1">{{ i.id }}</div>
+                <div class="col col-2">{{ i.status }}</div>
+                <div class="col col-3">{{ i.worker_id }}</div>
+                <div class="col col-4">{{ i.mode }}</div>
+                <div class="col col-5">{{ i.time }}</div>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    
+{% endblock %}

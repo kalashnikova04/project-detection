@@ -1,12 +1,12 @@
 import os
-from django.shortcuts import render
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.core.serializers.json import DjangoJSONEncoder
+from django.http import HttpResponse
+from main.models import LicensePlate, Task
 from .forms import ImageForm
-# from media.back_model_dino4_inference import backend_model_inference
 import pika
 import json
-
-from main.models import Task
 
 
 RMQ_URL = os.getenv('RMQ_URL')
@@ -16,29 +16,32 @@ os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
 
 
 def index(request):
-    # if os.path.exists('model.pickle') and os.path.exists('data.npz'):
     if request.method == 'POST':
-        form = ImageForm(request.POST, request.FILES)
+        form = ImageForm(request.POST)
+        files = request.FILES.getlist("image")
         if form.is_valid():
-            form.save()
-            img = form.instance
-            print(img, type(img))
-            context = {'form': form, 'img': img, 'img_title': img.image.url[15:]}
-            return render(request, 'main/index.html', context=context)
+            ids = []
+            for image in files:
+                lp = LicensePlate.objects.create(title=image.name, image=image)
+                ids.append(lp.id)
+            messages.success(request, "Images added")
+            return render(request, 'main/index.html', {'form': form,
+                                                       'images': LicensePlate.objects.filter(id__in=ids)})
+        
+        return render(request, 'main/index.html', {'form': form}) 
+
     else:
         form = ImageForm()
-        return render(request, 'main/index.html', {'form': form})
-    # return render(request, 'main/need_train.html')
+    return render(request, 'main/index.html', {'form': form})
 
 
 def train_yolo(request):
-    return
+    pass
 
 
 def send_inference_task(request):
     try:
-        img = request.GET.get('image')
-    # print(type(img), img.size, type(img.name), type(img.field_name))
+        recieved_data = request.GET.dict()
     except Exception as e:
         print(e)
         return render(request, 'main/error.html')
@@ -46,7 +49,12 @@ def send_inference_task(request):
     routing_key = ''
     worker_id = 'Unknown'
 
-    request.session['images'] = [img]
+    images = []
+    for k in recieved_data.keys():
+        if k == 'csrfmiddlewaretoken':
+            continue
+        images.append(recieved_data[k])
+    request.session['images'] = images
     
     
     with pika.BlockingConnection(pika.URLParameters(RMQ_URL)) as connection:
@@ -55,12 +63,8 @@ def send_inference_task(request):
             task = Task(status='PENDING', worker_id=worker_id, mode='inference')
             task.save()
             task_num = task.id
-            time_created = task.time
-            data = {'images': [img],
-                    'routing_key': routing_key,
-                    'mode': 'train',
-                    'task_id': task_num,
-                    'time_created': time_created}
+            data = {'images': images,
+                    'task_id': task_num}
 
             channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type="fanout", durable=True)
             channel.queue_declare(queue=f'{QUEUE_NAME}_rejected', durable=True)
@@ -74,7 +78,7 @@ def send_inference_task(request):
 
     context = {
         'task_num': task_num,
-        'mode': 'train'}
+        'mode': 'inference'}
 
     return render(request, 'main/mode.html', context)
 

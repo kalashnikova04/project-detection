@@ -8,7 +8,7 @@ def current_time():
 
 class LicensePlate(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, null=True, blank=True)
     image = models.ImageField(upload_to='uploads/')
     number = models.IntegerField(null=True, blank=True)
     annotations = models.FileField(upload_to='uploads/', null=True, blank=True)

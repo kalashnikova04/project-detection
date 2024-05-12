@@ -1,7 +1,14 @@
-<h1>Image(-s) with detected license plate(-s): </h1>
-{% csrf_token %}
-{% for image in images %}
+{% extends "main/pattern.html" %}
 
-    <h3>Predictions: {{image}}</h3> 
-    <img src="../media/preds/out_det_{{image}}.png" alt="connect" style="max-height:300px">
-{% endfor %}
+{% block title %}
+    Detections
+{% endblock %}
+
+{% block content %}
+    <h2 class="tasks_container">Image(-s) with detected license plate(-s): </h2>
+    {% csrf_token %}
+    {% for image in images %}
+        <h3>{{ image }}</h3>
+        <img src="../media/preds/out_det_{{image}}.png" alt="connect" style="max-height:300px">
+    {% endfor %}
+{% endblock %}

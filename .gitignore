@@ -4,6 +4,7 @@
 **.pth
 **.jpg
 **.deb
+**.onnx
 *.DS_Store
 
 mmdet/share_web/*

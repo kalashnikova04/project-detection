@@ -1,15 +1,14 @@
 import os
 from mmdeploy.apis.utils import build_task_processor
-from mmdeploy.utils import get_input_shape, load_config, get_root_logger
+from mmdeploy.utils import get_input_shape, load_config
 import torch
 import json
 
 import pika
 from uuid import uuid4
 from dotenv import load_dotenv
-# from main.models import Task
 import psycopg2
-from db_communication import insert_task, update_task
+from db_communication import update_task
 
 
 load_dotenv()
@@ -36,15 +35,15 @@ def main():
     channel.basic_qos(prefetch_count=PREFETCH_COUNT)
 
     def backend_model_inference(
-            image,
+            images,
             deploy_cfg = '../deploy_workspace/mmdeploy/configs/mmdet/detection/detection_onnxruntime_dynamic.py',
             model_cfg = 'configs/dino/dino-4scale_r50_1xb2-12e_lp.py',
-            backend_model = ['share_web/end2end.onnx'],
-            # ['mmdeploy_models/mmdet/onnx/end2end.onnx'],
+            backend_model = ['mmdeploy_models/mmdet/onnx/end2end.onnx'],
+            # ['share_web/end2end.onnx'],
             device = 'cpu'
     ):
-        image_name = image
-        image = f'share_web/uploads/{image_name}'
+        
+        images = ['share_web/uploads/' + image for image in images]
 
         deploy_cfg, model_cfg = load_config(deploy_cfg, model_cfg)
 
@@ -52,19 +51,20 @@ def main():
         model = task_processor.build_backend_model(backend_model)
 
         input_shape = get_input_shape(deploy_cfg)
-        model_inputs, _ = task_processor.create_input(image, input_shape)
 
-        with torch.no_grad():
-            result = model.test_step(model_inputs)
+        for image in images:
+            model_inputs, _ = task_processor.create_input(image, input_shape)
 
-        print(result)
+            with torch.no_grad():
+                result = model.test_step(model_inputs)
 
-        task_processor.visualize(
-            image=image,
-            model=model,
-            result=result[0],
-            window_name='visualize',
-            output_file=f'share_web/preds/out_det_{image_name}.png')
+
+            task_processor.visualize(
+                image=image,
+                model=model,
+                result=result[0],
+                window_name='visualize',
+                output_file=f'share_web/preds/out_det_{os.path.split(image)[1]}.png')
     
     def callback(ch, method, properties, body):
         data = json.loads(body)
@@ -80,7 +80,7 @@ def main():
         try:
             update_task(conn_db, task_num, 'IN_PROGRESS', worker_id)
             images = data.get('images')
-            backend_model_inference(images[0])
+            backend_model_inference(images)
 
             ch.basic_ack(delivery_tag=method.delivery_tag)
 

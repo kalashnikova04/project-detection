@@ -1,1 +1,11 @@
-<h1>Model will be turned in {{mode}} mode... Task number {{task_num}}. Go to see its <a href="/task_status/">status</a></h1>
+{% extends "main/pattern.html" %}
+
+{% block title %}
+    Model in {{mode}} mode
+{% endblock %}
+
+{% block content %}
+    <h2 class="tasks_container">Model will be turned in {{mode}} mode... Task number {{task_num}}. Go to see its
+        <a href="/task_status/">status</a>
+    </h2>
+{% endblock %}

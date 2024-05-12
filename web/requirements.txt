@@ -1,8 +1,7 @@
 Django==5.0.6
 Pillow
-scikit-learn
-requests
 pandas
 psycopg2-binary
 python-dotenv
 pika
+gunicorn
