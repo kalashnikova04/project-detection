@@ -15,6 +15,6 @@
 - на загруженном(-ых) изображении(-ях) детектирует области с номерами машин (возвращаут загруженное изображение с выделенной областью), на основе методов глубинного обучения (DL);
 - обучает модель YOLOv8 на имеющимся датасете.
 
-Стек: Python, Docker, PostgreSQL, RabbitMQ, Nginx, Django, Gunicorn
+Стек: Python, Docker, PostgreSQL, RabbitMQ, Nginx, Django, Gunicorn, Kubernetes
 
 Для запуска проекта следуйте инструкциям из `docs/get_started.md`
