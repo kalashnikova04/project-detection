@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgdb-deploy
+  namespace: lpdet
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: pgdb
+      app.kubernetes.io/part-of: det-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: pgdb
+        app.kubernetes.io/part-of: det-app
+    spec:
+      containers:
+      - name: pgdb
+        image: postgres
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+        envFrom:
+          - secretRef:
+              name: pgdb-secret
+        volumeMounts:
+          - name:  storage-db
+            mountPath: /var/lib/postgresql/data/
+      volumes:
+        - name: storage-db
+          persistentVolumeClaim:
+            claimName: pvc-pgdb
