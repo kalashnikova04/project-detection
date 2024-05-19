@@ -72,7 +72,7 @@ services:
     container_name: nginx
     volumes:
       - static_data:/usr/share/nginx/static/
-      - share_data:/usr/share/nginx/media/
+      - share_data:/usr/share/nginx/media/ #share-media
     depends_on:
       - django
 

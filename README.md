@@ -16,3 +16,5 @@
 - обучает модель YOLOv8 на имеющимся датасете.
 
 Стек: Python, Docker, PostgreSQL, RabbitMQ, Nginx, Django, Gunicorn
+
+Для запуска проекта следуйте инструкциям из `docs/get_started.md`
