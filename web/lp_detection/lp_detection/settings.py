@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
+import dj_database_url
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,7 +30,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG')
+DEBUG = 0
+# os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -59,7 +62,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'lp_detection.urls'
 
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates', 'main')
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = (os.getenv('STATIC_ROOT_ENV', os.path.join(BASE_DIR, 'static')))
 MEDIA_ROOT = Path(BASE_DIR, 'media')
 
 TEMPLATES = [
@@ -81,22 +84,26 @@ TEMPLATES = [
 WSGI_APPLICATION = 'lp_detection.wsgi.application'
 
 
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8099']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8099','http://localhost:8098',
+                        'https://license-plate-detection.ru', 'https://rabbitmq.license-plate-detection.ru']
 
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'pgdb',
-        'PORT': '5432',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'postgres',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'postgres',
+    #     'HOST': 'pgdb',
+    #     'PORT': '5432',
+    # }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
 }
+
+# dj_database_url.config(default=os.getenv('DATABASE_URL'))
 
 
 # Password validation
@@ -135,7 +142,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

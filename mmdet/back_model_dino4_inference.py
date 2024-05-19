@@ -72,9 +72,9 @@ def main():
         print(f">>> start processing message {task_num}")
 
         conn_db = psycopg2.connect(
-            database="postgres",
-            host=os.getenv('POSTGRES_HOST'),
-            user=os.getenv('PGUSER'),
+            database=os.getenv('POSTGRES_DB'),
+            host='pgdb-svc',
+            user=os.getenv('POSTGRES_USER'),
             password=os.getenv('POSTGRES_PASSWORD')
         )
         try:

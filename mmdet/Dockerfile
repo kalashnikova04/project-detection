@@ -102,4 +102,5 @@ COPY init_plugins.py /deploy_workspace/mmdeploy/mmdeploy/backend/onnxruntime/ini
 # COPY configs/dino.py /mmdetection/mmdet/models/detectors/dino.py
 
 COPY configs/dino-4scale_r50_1xb2-12e_lp.py /mmdetection/configs/dino
-COPY configs/dino-5scale_swin-l_1xb16-12e_lp9.py /mmdetection/configs/dino
+COPY configs/dino-5scale_swin-t_1xb16-12e_lp9.py /mmdetection/configs/dino
+COPY configs/ssd_.py /mmdetection/configs/ssd
