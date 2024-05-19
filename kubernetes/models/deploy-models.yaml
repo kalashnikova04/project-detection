@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-deploy
+  namespace: lpdet
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      serviceAccountName: sa-web
+      containers:
+      - name: mmdeploy-mmdet
+        image: kalashnikova/lp-detection:mmdeploy_2
+        command: ["python3", "-u", "back_model_dino4_inference.py"]
+        tty: true
+        resources:
+          limits:
+            memory: "4096Mi"
+            cpu: "3000m"
+        # ports:
+        # - containerPort: <Port>
+        env:
+          - name: POSTGRES_USER
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_USER
+                name: pgdb-secret
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_PASSWORD
+                name: pgdb-secret
+          - name: POSTGRES_DB
+            valueFrom:
+              secretKeyRef:
+                key: POSTGRES_DB
+                name: pgdb-secret
+          - name: DATABASE_URL
+            value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@pgdb-svc:5432/$(POSTGRES_DB)
+          - name: RABBITMQ_DEFAULT_USER
+            valueFrom:
+              configMapKeyRef:
+                key: RABBITMQ_DEFAULT_USER
+                name: rabbitmq-configmap
+          - name: RABBITMQ_DEFAULT_PASS
+            valueFrom:
+              configMapKeyRef:
+                key: RABBITMQ_DEFAULT_PASS
+                name: rabbitmq-configmap
+          - name: RABBITMQ_DEFAULT_VHOST
+            valueFrom:
+              configMapKeyRef:
+                key: RABBITMQ_DEFAULT_VHOST
+                name: rabbitmq-configmap
+          - name: RMQ_URL
+            value: amqp://$(RABBITMQ_DEFAULT_USER):$(RABBITMQ_DEFAULT_PASS)@rabbitmq:5672/$(RABBITMQ_DEFAULT_VHOST)
+        volumeMounts:
+          - name: share-media
+            mountPath: /mmdetection/share_web
+      volumes:
+        - name: share-media
+          persistentVolumeClaim:
+            claimName: pvc-media
+
+

@@ -1,0 +1,39 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: lpdet
+  name: rabbitmq-internal
+  labels:
+    app: rabbitmq
+spec:
+  clusterIP: None
+  ports:
+   - name: http
+     protocol: TCP
+     port: 15672
+   - name: amqp
+     protocol: TCP
+     port: 5672
+  selector:
+    app: rabbitmq
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: rabbitmq
+  namespace: lpdet
+  labels:
+    app: rabbitmq
+    type: LoadBalancer
+spec:
+  ports:
+   - name: http
+     protocol: TCP
+     port: 15672
+     targetPort: 15672
+   - name: amqp
+     protocol: TCP
+     port: 5672
+     targetPort: 5672
+  selector:
+    app: rabbitmq

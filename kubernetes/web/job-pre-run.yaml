@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-pre-run
+  namespace: lpdet
+  labels:
+    app.kubernetes.io/part-of: det-app
+    app.kubernetes.io/component: migrations
+spec:
+  ttlSecondsAfterFinished: 100
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/part-of: det-app
+        app.kubernetes.io/component: migrations
+    spec:
+      containers:
+      - name: done
+        image: kalashnikova/lp-detection:django_5
+        # registry.gitlab.akhcheck.ru/anastasiya.kalashnikova/highload-project/django:deb_f_stat
+        command: ["/bin/sh", "-c"]
+        args:
+          - | 
+            python manage.py makemigrations;
+            python manage.py migrate;
+            python manage.py createsuperuser_if_none_exists \
+              --user $(DJANGO_SUPERUSER_USERNAME) \
+              --password $(DJANGO_SUPERUSER_PASSWORD) \
+              --email $(DJANGO_SUPERUSER_EMAIL);
+            # python manage.py clear_tasks
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_USER
+              name: pgdb-secret
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_PASSWORD
+              name: pgdb-secret
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_DB
+              name: pgdb-secret
+        - name: DATABASE_URL
+          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@pgdb-svc:5432/$(POSTGRES_DB)
+        envFrom:
+          - configMapRef:
+              name: cm-django
+      # imagePullSecrets:
+      #   - name: 
+        # gitlab-registry
+      restartPolicy: Never

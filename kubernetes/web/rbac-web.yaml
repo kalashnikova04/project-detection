@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: sa-web
+  namespace: lpdet
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: web-rights
+  namespace: lpdet
+rules:
+  - apiGroups: ["apps", "extensions", "batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: web-rights
+  namespace: lpdet
+subjects:
+- kind: ServiceAccount
+  name: sa-web
+roleRef:
+  kind: Role
+  name: web-rights
+  apiGroup: rbac.authorization.k8s.io

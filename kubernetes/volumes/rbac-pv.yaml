@@ -1,0 +1,26 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: read_write_pv
+  namespace: lpdet
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - persistentvolumes
+      - nodes
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read_write_pv
+  namespace: lpdet
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: read_write_pv
+subjects:
+  - kind: ServiceAccount
+    name: sa-web
+    namespace: lpdet

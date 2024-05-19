@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-media
+  namespace: lpdet
+spec:
+  storageClassName: minikube-storage
+  resources:
+    requests:
+      storage: 512Mi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany

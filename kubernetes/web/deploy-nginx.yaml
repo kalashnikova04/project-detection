@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  namespace: lpdet
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: static
+      app.kubernetes.io/part-of: det-app
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: static
+        app.kubernetes.io/part-of: det-app
+    spec:
+      serviceAccountName: sa-web
+      initContainers:
+      - name: collect-static
+        image: kalashnikova/lp-detection:django_5
+        command: ["python", "manage.py", "collectstatic", "--no-input"]
+        env:
+          - name: STATIC_ROOT_ENV
+            value: "/usr/share/nginx/static"
+        volumeMounts:
+          - name: static
+            mountPath: /usr/share/nginx/static
+      containers:
+      - name: nginx
+        image: kalashnikova/lp-detection:nginx_6
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        ports:
+          - containerPort: 80
+        volumeMounts:
+          - name: static
+            mountPath: /usr/share/nginx/static
+          - name: share-media
+            mountPath: /usr/share/nginx/media
+      volumes:
+        - name: static
+          emptyDir: {}
+        - name: share-media
+          persistentVolumeClaim:
+            claimName: pvc-media

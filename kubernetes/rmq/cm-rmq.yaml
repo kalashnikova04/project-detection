@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rabbitmq-configmap
+  namespace: lpdet
+data:
+  enabled_plugins: |
+      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+
+  rabbitmq.conf: |
+      cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+      cluster_formation.k8s.address_type = hostname
+      listeners.tcp.default = 5672
+      cluster_formation.node_cleanup.interval = 30
+      cluster_formation.node_cleanup.only_log_warning = true
+      cluster_partition_handling = autoheal
+      queue_master_locator=min-masters
+      cluster_formation.k8s.service_name = rabbitmq-internal
+      cluster_formation.k8s.hostname_suffix = .rabbitmq-internal.lpdet.svc.cluster.local
+  
+  RABBITMQ_DEFAULT_USER: student
+  RABBITMQ_DEFAULT_PASS: qwerty
+  service: rabbitmq.wiki-movie.search.ru
+  RABBITMQ_DEFAULT_VHOST: vhost
