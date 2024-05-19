@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import os
 
 from mmdeploy.utils import get_file_path
