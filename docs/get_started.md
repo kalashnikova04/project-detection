@@ -3,7 +3,7 @@
 ## Запуск проекта
 В терминале:
 
-1. Клонируйте репозиторий 
+1. Клонируйте репозиторий
 ```git clone -b master https://github.com/kalashnikova04/project-detection.git project-detection-v-dc```
 
 2. ```cd project-detection-v-dc```

@@ -26,7 +26,7 @@ metainfo = dict(
 work_dir = "./model_output/dino/5scale"
 
 train_dataloader = dict(
-    batch_size=16,
+    batch_size=2,
     num_workers=1,
     dataset=dict(
         data_root=data_root,
@@ -37,7 +37,7 @@ train_dataloader = dict(
 )
 
 val_dataloader = dict(
-    batch_size=8,
+    batch_size=1,
     dataset=dict(
         data_root=data_root,
         metainfo=metainfo,
@@ -47,7 +47,7 @@ val_dataloader = dict(
 )
 
 test_dataloader = dict(
-    batch_size=8,
+    batch_size=1,
     dataset=dict(
         data_root=data_root,
         metainfo=metainfo,
@@ -62,7 +62,7 @@ vis_backends = [
         init_kwargs={
             "project": "license-plate-detection",
             "group": "dino-5scale_swin-t_1xb16-12e_lp9",
-            "name": "exp-24-05-08-1-base",
+            "name": "exp-24-05-16-1-base",
         },
     )
 ]
@@ -84,4 +84,21 @@ test_evaluator = dict(
     outfile_prefix="./model_output/dino/5scale/test",
 )
 
-auto_scale_lr = dict(enable=True, base_batch_size=16)
+default_hooks = dict(
+    early_stopping=dict(
+        type="EarlyStoppingHook", monitor="coco/bbox_mAP", patience=10, min_delta=0.005
+    ),
+    checkpoint=dict(
+        type="CheckpointHook", interval=5, save_best="auto", out_dir=work_dir
+    ),
+)
+
+optim_wrapper = dict(
+    type="AmpOptimWrapper",
+    optimizer=dict(type="SGD", lr=1e-4),
+    accumulative_counts=4
+    # lr=0.0001,  # 0.0002 for DeformDETR
+    # weight_decay=0.0001),
+)
+
+auto_scale_lr = dict(enable=True, base_batch_size=2)

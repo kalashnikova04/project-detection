@@ -10,9 +10,9 @@ def get_ops_path() -> str:
         str: The library path to onnxruntime custom ops.
     """
     candidates = [
-        '../../../build/lib/libmmdeploy_onnxruntime_ops.so',
-        '../../lib/libmmdeploy_onnxruntime_ops.so',
-        '../deploy_workspace/mmdeploy/build/lib/mmdeploy_onnxruntime_ops.dll'
+        "../../../build/lib/libmmdeploy_onnxruntime_ops.so",
+        "../../lib/libmmdeploy_onnxruntime_ops.so",
+        "../deploy_workspace/mmdeploy/build/lib/mmdeploy_onnxruntime_ops.dll",
     ]
     return get_file_path(os.path.dirname(__file__), candidates)
 
@@ -24,8 +24,8 @@ def get_lib_path() -> str:
         str: The library path to onnxruntime.
     """
     candidates = [
-        '../../../../onnxruntime-linux-x64-1.12.0/lib/libonnxruntime.so*',
-        '../../lib/libonnxruntime.so*',
-        '../../lib/onnxruntime.dll',
+        "../../../../onnxruntime-linux-x64-1.12.0/lib/libonnxruntime.so*",
+        "../../lib/libonnxruntime.so*",
+        "../../lib/onnxruntime.dll",
     ]
     return get_file_path(os.path.dirname(__file__), candidates)

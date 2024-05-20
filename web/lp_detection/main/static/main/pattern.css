@@ -25,7 +25,7 @@ nav a{
 .underline{
     position:relative;
     text-decoration:none;
-  
+
     &::after{
       content:"";
       position:absolute;
@@ -36,11 +36,11 @@ nav a{
       background-color:white;
       transition: width .3s ease;
     }
-    
+
     &:hover{
       color:#f17878;
     }
-  
+
     &:hover::after{
       width:100%;
     }
@@ -57,12 +57,12 @@ nav a{
 	margin-bottom: 10vh;
 	background-color: #FFF;
 	border-radius: .5rem;
-	box-shadow: 2px 5px 15px rgba(#000, .2); 
+	box-shadow: 2px 5px 15px rgba(#000, .2);
 }
 
 body {
 	font-family: "Inter", sans-serif;
-	color: #0d0f21; 
+	color: #0d0f21;
 	background-color:#d0d1de;
 	line-height: 1.5;
 }
@@ -119,7 +119,7 @@ input, button {
   margin-top: 1rem;
 	display: block;
 	font-weight: 700;
-		color: #0d0f21; 
+		color: #0d0f21;
 }
 .input-file input[type=file] {
 	position: absolute;

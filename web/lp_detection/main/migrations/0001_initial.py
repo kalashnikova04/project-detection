@@ -7,18 +7,17 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='LicensePlate',
+            name="LicensePlate",
             fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=200)),
-                ('image', models.ImageField(upload_to='uploads/')),
-                ('number', models.IntegerField()),
-                ('annotations', models.FileField(upload_to='uploads/')),
+                ("id", models.AutoField(primary_key=True, serialize=False)),
+                ("title", models.CharField(max_length=200)),
+                ("image", models.ImageField(upload_to="uploads/")),
+                ("number", models.IntegerField()),
+                ("annotations", models.FileField(upload_to="uploads/")),
             ],
         ),
     ]

@@ -31,12 +31,12 @@ services:
       timeout: 5s
       retries: 5
     container_name: pgdb
-  
+
   model_deployed:
     build: ./mmdet
     container_name: mmdeploy-mmdet
     restart: always
-    volumes: 
+    volumes:
       - share_data:/mmdetection/share_web/
       - models:/mmdetection/mmdeploy_models/mmdet/onnx/
     tty: true
@@ -46,7 +46,7 @@ services:
     depends_on:
       - rmq
       - django
-  
+
   rmq:
     image: rabbitmq:3.8.14-management-alpine
     hostname: ${RMQ_HOST}
@@ -63,7 +63,7 @@ services:
       interval: 30s
       timeout: 30s
       retries: 10
-  
+
   nginx:
     build: ./nginx
     restart: always

@@ -1,9 +1,11 @@
 from django import forms
+
 from .models import LicensePlate
 
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
+
 
 class MultipleFileField(forms.FileField):
     def __init__(self, *args, **kwargs):
@@ -18,9 +20,12 @@ class MultipleFileField(forms.FileField):
             result = single_file_clean(data, initial)
         return result
 
+
 class ImageForm(forms.ModelForm):
     image = MultipleFileField(required=False)
 
     class Meta:
         model = LicensePlate
-        fields = ['image', ]
+        fields = [
+            "image",
+        ]
