@@ -21,21 +21,21 @@ spec:
         backend:
           service:
             name: django-svc
-            port: 
+            port:
               number: 8098
       - pathType: ImplementationSpecific
         path: /static/(.*)
         backend:
           service:
             name: static-svc
-            port: 
+            port:
               number: 80
       - pathType: ImplementationSpecific
         path: /media/(.*)
         backend:
           service:
             name: static-svc
-            port: 
+            port:
               number: 80
   - host: rabbitmq.license-plate-detection.ru
     http:
@@ -45,5 +45,5 @@ spec:
         backend:
           service:
             name: rabbitmq
-            port: 
+            port:
               number: 15672

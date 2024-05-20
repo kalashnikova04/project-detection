@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('main', '0001_initial'),
+        ("main", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='licenseplate',
-            name='annotations',
-            field=models.FileField(blank=True, upload_to='uploads/'),
+            model_name="licenseplate",
+            name="annotations",
+            field=models.FileField(blank=True, upload_to="uploads/"),
         ),
         migrations.AlterField(
-            model_name='licenseplate',
-            name='number',
+            model_name="licenseplate",
+            name="number",
             field=models.IntegerField(blank=True),
         ),
     ]

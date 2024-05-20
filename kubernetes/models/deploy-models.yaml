@@ -66,5 +66,3 @@ spec:
         - name: share-media
           persistentVolumeClaim:
             claimName: pvc-media
-
-

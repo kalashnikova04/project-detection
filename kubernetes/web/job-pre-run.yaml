@@ -20,7 +20,7 @@ spec:
         # registry.gitlab.akhcheck.ru/anastasiya.kalashnikova/highload-project/django:deb_f_stat
         command: ["/bin/sh", "-c"]
         args:
-          - | 
+          - |
             python manage.py makemigrations;
             python manage.py migrate;
             python manage.py createsuperuser_if_none_exists \
@@ -50,6 +50,6 @@ spec:
           - configMapRef:
               name: cm-django
       # imagePullSecrets:
-      #   - name: 
+      #   - name:
         # gitlab-registry
       restartPolicy: Never

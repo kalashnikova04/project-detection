@@ -5,7 +5,7 @@
 1. Не забудьте включить Docker Desktop или запустить docker через terminal.
 2. В терминале:
 
-    1. Клонируйте репозиторий 
+    1. Клонируйте репозиторий
     ```git clone -b version-k8s https://github.com/kalashnikova04/project-detection.git project-detection-v-k8s```
     2. ```cd project-detection-v-k8s```
     3. `minikube start`

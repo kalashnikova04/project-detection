@@ -15,11 +15,11 @@
 
         <form class='modal' method="get" action="{% url 'main:mode' %}" style="max-width: 100%;">
             <div class="modal-body">
-                <h2 class="modal-title">Succesfully uploaded:</h2> 
+                <h2 class="modal-title">Succesfully uploaded:</h2>
                 {% csrf_token %}
                 <div class="grid">
                     {% for image in images %}
-                        <h4>{{image.title}}</h4> 
+                        <h4>{{image.title}}</h4>
                         <img src="{{ image.image.url}}" alt="connect">
                         <input type="hidden" name="image{{image.id}}" value="{{image.title}}">
                     {% endfor %}

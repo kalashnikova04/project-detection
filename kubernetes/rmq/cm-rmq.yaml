@@ -18,7 +18,7 @@ data:
       queue_master_locator=min-masters
       cluster_formation.k8s.service_name = rabbitmq-internal
       cluster_formation.k8s.hostname_suffix = .rabbitmq-internal.lpdet.svc.cluster.local
-  
+
   RABBITMQ_DEFAULT_USER: student
   RABBITMQ_DEFAULT_PASS: qwerty
   service: rabbitmq.wiki-movie.search.ru
